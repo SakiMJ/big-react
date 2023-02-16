@@ -7,12 +7,31 @@ const pkgPath = resolvePkgPath(name);
 //react产物的路径
 const pkgDistPath = resolvePkgPath(name, true);
 
-export default {
-	input: `${pkgPath}/${module}`,
-	output: {
-		file: `${pkgDistPath}/index.js`,
-		name: 'index.js',
-		format: 'umd'
+export default [
+	{
+		input: `${pkgPath}/${module}`,
+		output: {
+			file: `${pkgDistPath}/index.js`,
+			name: 'index.js',
+			format: 'umd'
+		},
+
+		plugins: getBaseRollupPlugins()
 	},
-	plugins: getBaseRollupPlugins()
-};
+	{
+		input: `${pkgPath}/src/jsx.ts`,
+		output: [
+			{
+				file: `${pkgDistPath}/jsx-runtime.js`,
+				name: 'jsx-runtime.js',
+				format: 'umd'
+			},
+			{
+				file: `${pkgDistPath}/jsx-dev-runtime.js`,
+				name: 'jsx-dev-runtime.js',
+				format: 'umd'
+			}
+		],
+		plugins: getBaseRollupPlugins()
+	}
+];
