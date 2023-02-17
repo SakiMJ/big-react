@@ -26,29 +26,29 @@ const ReactElement = function (
 };
 
 export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
-	let key: Key = '';
+	let key: Key = null;
 	let ref: Ref = null;
-	const props: Props = null;
+	const props: Props = {};
 
 	for (const prop in config) {
-		const value = config[prop];
+		const val = config[prop];
 
 		if (prop === 'key') {
-			if (value !== undefined) {
-				key = '' + value;
+			if (val !== undefined) {
+				key = '' + val;
 			}
 		}
 		if (prop === 'ref') {
-			if (value !== undefined) {
-				ref = '' + value;
+			if (val !== undefined) {
+				ref = val;
 			}
 		}
 
 		if ({}.hasOwnProperty.call(config, prop)) {
-			props[prop] = value;
+			props[prop] = val;
 		}
 
-		const maybeChildrenLength = maybeChildren.lengh;
+		const maybeChildrenLength = maybeChildren.length;
 		if (maybeChildrenLength) {
 			if (maybeChildrenLength === 1) {
 				props.children = maybeChildren[0];
@@ -60,5 +60,29 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 
 	return ReactElement(type, key, ref, props);
 };
+export const jsxDEV = (type: ElementType, config: any) => {
+	let key: Key = null;
+	let ref: Ref = null;
+	const props: Props = {};
 
-export const jsxDEV = jsx;
+	for (const prop in config) {
+		const val = config[prop];
+
+		if (prop === 'key') {
+			if (val !== undefined) {
+				key = '' + val;
+			}
+		}
+		if (prop === 'ref') {
+			if (val !== undefined) {
+				ref = val;
+			}
+		}
+
+		if ({}.hasOwnProperty.call(config, prop)) {
+			props[prop] = val;
+		}
+	}
+
+	return ReactElement(type, key, ref, props);
+};
