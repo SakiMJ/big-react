@@ -1,4 +1,4 @@
 import { FiberNode } from './fiber';
 export const completeWork = (fiber: FiberNode) => {
-    return fiber;
+	return fiber;
 };
