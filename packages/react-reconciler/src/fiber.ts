@@ -1,6 +1,7 @@
 import { Props, Key, Ref } from 'shared/ReactTypes';
 import { WorkTag } from './workTags';
 import { Flags, NoFlags } from './fiberFlags';
+import { Container } from 'hostConfig';
 export class FiberNode {
 	type: any;
 	tag: WorkTag;
@@ -15,7 +16,9 @@ export class FiberNode {
 	index: number;
 
 	memoizedProps: Props | null;
+	memoizedState: any;
 	alternate: FiberNode | null;
+	updateQueue: unknown;
 	flags: Flags;
 
 	constructor(tag: WorkTag, pendingProps: Props, key: Key) {
@@ -39,6 +42,21 @@ export class FiberNode {
 		this.pendingProps = pendingProps;
 		this.memoizedProps = null;
 		this.alternate = null;
+		this.updateQueue = null;
+		this.memoizedState = null;
+		//副作用
 		this.flags = NoFlags;
+	}
+}
+//current: 指hostRootFiber  finishedWork: 指向更新完成之后的hostRootFiber
+export class FiberRootNode {
+	container: Container;
+	current: FiberNode;
+	finishedWork: FiberNode | null;
+	constructor(container: Container, hostRootFiber: FiberNode) {
+		this.container = container; //宿主环境
+		this.current = hostRootFiber;
+		hostRootFiber.stateNode = this;
+		this.finishedWork = null;
 	}
 }
