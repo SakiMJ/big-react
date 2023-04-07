@@ -1,5 +1,5 @@
-import { Props, Key, Ref } from 'shared/ReactTypes';
-import { WorkTag } from './workTags';
+import { Props, Key, Ref, ReactElment } from 'shared/ReactTypes';
+import { FunctionComponent, HostComponent, WorkTag } from './workTags';
 import { Flags, NoFlags } from './fiberFlags';
 import { Container } from 'hostConfig';
 export class FiberNode {
@@ -60,3 +60,44 @@ export class FiberRootNode {
 		this.finishedWork = null;
 	}
 }
+
+export const createWorkInProgress = (
+	current: FiberNode,
+	pendingProps: Props
+) => {
+	let wip = current.alternate;
+
+	if (wip === null) {
+		wip = new FiberNode(current.tag, pendingProps, current.key);
+
+		wip.stateNode = current.stateNode;
+
+		wip.alternate = current;
+		current.alternate = wip;
+	} else {
+		wip.pendingProps = pendingProps;
+		wip.flags = NoFlags;
+	}
+	wip.type = current.type;
+	wip.child = current.child;
+	wip.memoizedProps = current.memoizedProps;
+	wip.memoizedState = current.memoizedState;
+	wip.updateQueue = current.updateQueue;
+
+	return wip;
+};
+
+export const createFiberFormElement = (element: ReactElment) => {
+	const { type, key, props } = element;
+
+	let fiberTag: WorkTag = FunctionComponent;
+
+	if (typeof type === 'string') {
+		fiberTag = HostComponent;
+	}
+
+	const fiber = new FiberNode(fiberTag, props, key);
+	fiber.type = type;
+
+	return fiber;
+};

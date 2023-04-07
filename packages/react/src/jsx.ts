@@ -37,11 +37,14 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 			if (val !== undefined) {
 				key = '' + val;
 			}
+			continue;
 		}
+
 		if (prop === 'ref') {
 			if (val !== undefined) {
 				ref = val;
 			}
+			continue;
 		}
 
 		if ({}.hasOwnProperty.call(config, prop)) {

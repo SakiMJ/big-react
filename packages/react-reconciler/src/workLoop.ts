@@ -1,14 +1,12 @@
-import { FiberNode, FiberRootNode } from './fiber';
+import { FiberNode, FiberRootNode, createWorkInProgress } from './fiber';
 import { beginWork } from './beginWork';
 import { completeWork } from './completeWork';
 import { HostRoot } from './workTags';
-import { Props } from 'shared/ReactTypes';
-import { NoFlags } from './fiberFlags';
 
 let workInProgress: FiberNode | null = null;
 
 function prepareFreshStack(root: FiberRootNode) {
-	workInProgress = createWorkInprogress(root.current, {});
+	workInProgress = createWorkInProgress(root.current, {});
 } //让当前的workInprogress 指向要执行的第一个fiberNode
 
 export function scheduleUpdateOnFiber(fiber: FiberNode) {
@@ -76,28 +74,3 @@ function renderRoot(root: FiberRootNode) {
 		} while (node !== null);
 	}
 }
-
-export const createWorkInprogress = (
-	current: FiberNode,
-	pendingProps: Props
-): FiberNode => {
-	let wip = current.alternate;
-
-	if (wip === null) {
-		//	mount
-		wip = new FiberNode(current.tag, pendingProps, current.key);
-		wip.stateNode = current.stateNode;
-		wip.alternate = current;
-		current.alternate = wip;
-	} else {
-		wip.pendingProps = pendingProps;
-		wip.flags = NoFlags;
-	}
-	wip.type = current.type;
-	wip.updateQueue = current.updateQueue;
-	wip.memoizedProps = current.memoizedProps;
-	wip.memoizedState = current.memoizedState;
-	wip.child = current.child;
-
-	return wip;
-};
